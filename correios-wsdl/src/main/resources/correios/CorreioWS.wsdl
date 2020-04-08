@@ -1,0 +1,618 @@
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.bcb.gov.br/correiows" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.bcb.gov.br/correiows" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.bcb.gov.br/correiows">
+      <s:element name="ConsultarCorreiosPorPasta">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="consulta" type="tns:ConsultaCorreiosPorPastaWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ConsultaCorreiosPorPastaWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Pasta" type="tns:PastaAutorizadaWSDTO" />
+          <s:element minOccurs="0" maxOccurs="1" name="Setor" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataInicial" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataFinal" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroCorreio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="AssuntoConteudo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Unidade" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ApenasMensagens" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="PesquisarEmTodasAsPastas" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="Pagina" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PastaAutorizadaWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Unidade" type="tns:UnidadeWSDTO" />
+          <s:element minOccurs="0" maxOccurs="1" name="Dependencia" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Setor" type="tns:SetorWSDTO" />
+          <s:element minOccurs="1" maxOccurs="1" name="Tipo" type="tns:TipoPastaWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="UnidadeWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Nome" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Ativa" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="Tipo" type="tns:TipoUnidadeWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="TipoUnidadeWSDTO">
+        <s:restriction base="s:string">
+          <s:enumeration value="UnidadeBanco" />
+          <s:enumeration value="UnidadeExterna" />
+          <s:enumeration value="InstituicaoFinanceira" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="SetorWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Nome" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Ativo" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="TipoPastaWSDTO">
+        <s:restriction base="s:string">
+          <s:enumeration value="CaixaEntrada" />
+          <s:enumeration value="Destinados" />
+          <s:enumeration value="Arquivados" />
+          <s:enumeration value="Reservados" />
+          <s:enumeration value="Transmitidos" />
+          <s:enumeration value="Cancelados" />
+          <s:enumeration value="Setor" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="ConsultarCorreiosPorPastaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ConsultarCorreiosPorPastaResult" type="tns:ResultadoConsultaCorreiosWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultadoConsultaCorreiosWSDTO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResultadoCorreioWSDTO">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="QuantidadeCorreios" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="Correios" type="tns:ArrayOfResumoCorreioWSDTO" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ResultadoCorreioWSDTO" abstract="true">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="MensagemErro" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="OcorreuErro" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfResumoCorreioWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ResumoCorreioWSDTO" nillable="true" type="tns:ResumoCorreioWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ResumoCorreioWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Assunto" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Data" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="UnidadeDestinataria" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DependenciaDestinataria" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UnidadeRemetente" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DependenciaRemetente" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Grupo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Status" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TipoCorreio" type="tns:TipoCorreioWSDTO" />
+          <s:element minOccurs="1" maxOccurs="1" name="NumeroCorreio" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Pasta" type="tns:PastaAutorizadaWSDTO" />
+          <s:element minOccurs="0" maxOccurs="1" name="Setor" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Transicao" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Versao" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="TipoCorreioWSDTO">
+        <s:restriction base="s:string">
+          <s:enumeration value="MENSAGEM" />
+          <s:enumeration value="COMUNICACAO" />
+          <s:enumeration value="COMUNICACAOGERAL" />
+          <s:enumeration value="INFORMATIVO" />
+          <s:enumeration value="COMUNICACAOSOCIAL" />
+          <s:enumeration value="LINHADIRETA" />
+          <s:enumeration value="ATODEDIRETOR" />
+          <s:enumeration value="ATONORMATIVOCONJUNTO" />
+          <s:enumeration value="ATOPRESI" />
+          <s:enumeration value="AVISO" />
+          <s:enumeration value="CARTACIRCULAR" />
+          <s:enumeration value="CIRCULAR" />
+          <s:enumeration value="COMUNICADO" />
+          <s:enumeration value="COMUNICADOCONJUNTO" />
+          <s:enumeration value="DECISAOCONJUNTA" />
+          <s:enumeration value="ORDEMDESERVICO" />
+          <s:enumeration value="PORTARIA" />
+          <s:enumeration value="PORTARIACONJUNTA" />
+          <s:enumeration value="RESOLUCAO" />
+          <s:enumeration value="PORTARIAINTERMINISTERIAL" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="LerCorreio">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="parametros" type="tns:ParametrosLerCorreioWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ParametrosLerCorreioWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Correio" type="tns:ResumoCorreioWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="LerCorreioResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LerCorreioResult" type="tns:ResultadoLerCorreioWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultadoLerCorreioWSDTO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResultadoCorreioWSDTO">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="DetalheCorreio" type="tns:DetalheCorreioWSDTO" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="DetalheCorreioWSDTO">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="NumeroCorreio" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Transicao" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Versao" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assunto" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Ementa" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Conteudo" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TipoCorreio" type="tns:TipoCorreioWSDTO" />
+          <s:element minOccurs="0" maxOccurs="1" name="De" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Para" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EnviadaPor" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="EnviadaEm" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="RecebidaPor" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="RecebidaEm" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Despachos" type="tns:ArrayOfDespachoWSDTO" />
+          <s:element minOccurs="0" maxOccurs="1" name="Anexos" type="tns:ArrayOfAnexoWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDespachoWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DespachoWSDTO" nillable="true" type="tns:DespachoWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DespachoWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="De" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Para" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EnviadaPor" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="EnviadaEm" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="RecebidaPor" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="RecebidaEm" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Conteudo" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfAnexoWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="AnexoWSDTO" nillable="true" type="tns:AnexoWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="AnexoWSDTO">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IdAnexo" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="NomeAnexo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Conteudo" type="s:base64Binary" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ConsultarPastasAutorizadas">
+        <s:complexType />
+      </s:element>
+      <s:element name="ConsultarPastasAutorizadasResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ConsultarPastasAutorizadasResult" type="tns:ResultadoConsultaPastasAutorizadasWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultadoConsultaPastasAutorizadasWSDTO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResultadoCorreioWSDTO">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="PastasAutorizadas" type="tns:ArrayOfPastaAutorizadaWSDTO" />
+              <s:element minOccurs="1" maxOccurs="1" name="QuantidadePastasAutorizadas" type="s:int" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfPastaAutorizadaWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PastaAutorizadaWSDTO" nillable="true" type="tns:PastaAutorizadaWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="TransmitirCorreio">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="parametros" type="tns:ParametrosTransmitirCorreioWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ParametrosTransmitirCorreioWSDTO">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Destino" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Conteudo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Ementa" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PalavrasChave" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assunto" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TipoCorreio" type="tns:TipoCorreioWSDTO" />
+          <s:element minOccurs="1" maxOccurs="1" name="Grupo" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Anexos" type="tns:ArrayOfAnexoWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="TransmitirCorreioResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TransmitirCorreioResult" type="tns:ResultadoTransmitirCorreioWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultadoTransmitirCorreioWSDTO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResultadoCorreioWSDTO">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="NumeroCorreio" type="s:int" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="ConsultarComunicacaoGeralDocumentoDivulgacao">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="parametros" type="tns:ParametrosConsultarComunicacaoGeralDocumentoDivulgacaoWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ParametrosConsultarComunicacaoGeralDocumentoDivulgacaoWSDTO">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Pagina" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroDocumento" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TipoDocumento" nillable="true" type="tns:TipoCorreioWSDTO" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExpressaoBusca" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataInicial" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataFinal" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="PesquisarPalavrasChave" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ConsultarComunicacaoGeralDocumentoDivulgacaoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ConsultarComunicacaoGeralDocumentoDivulgacaoResult" type="tns:ResultadoConsultarComunicacaoGeralDocumentoDivulgacaoWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultadoConsultarComunicacaoGeralDocumentoDivulgacaoWSDTO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResultadoCorreioWSDTO">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="ComGeraisDocDivulgacao" type="tns:ArrayOfComunicacaoGeralDocumentoDivulgacao" />
+              <s:element minOccurs="1" maxOccurs="1" name="QuantidadeComGeralDocDivulgacao" type="s:int" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfComunicacaoGeralDocumentoDivulgacao">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ComunicacaoGeralDocumentoDivulgacao" nillable="true" type="tns:ComunicacaoGeralDocumentoDivulgacao" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ComunicacaoGeralDocumentoDivulgacao">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="NumeroCorreio" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Versao" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="SequencialNormativo" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="TipoDocumento" type="tns:TipoCorreioWSDTO" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataHora" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Responsavel" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assunto" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Ementa" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="EComunicacaoGeral" type="s:boolean" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="LerComunicacaoGeralDocumentoDivulgacao">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Parametros" type="tns:ParametrosLerComunicacaoGeralDocumentoDivulgacaoWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ParametrosLerComunicacaoGeralDocumentoDivulgacaoWSDTO">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="NumeroCorreio" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="AssuntoCorreio" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="LerComunicacaoGeralDocumentoDivulgacaoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LerComunicacaoGeralDocumentoDivulgacaoResult" type="tns:ResultadoLerComunicacaoGeralDocumentoDivulgacaoWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultadoLerComunicacaoGeralDocumentoDivulgacaoWSDTO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResultadoCorreioWSDTO">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="DadosComunicacaoGeralDocumentoDivulgacao" type="tns:DetalheComunicacaoGeralDocumentoDivulgacaoWSDTO" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="DetalheComunicacaoGeralDocumentoDivulgacaoWSDTO">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="NumeroCorreio" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="SequencialNormativo" nillable="true" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="TipoDocumento" type="tns:TipoCorreioWSDTO" />
+          <s:element minOccurs="1" maxOccurs="1" name="DataHora" nillable="true" type="s:dateTime" />
+          <s:element minOccurs="0" maxOccurs="1" name="Remetente" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Responsavel" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assunto" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Conteudo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Ementa" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="EComunicacaoGeral" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Documento" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Anexos" type="tns:ArrayOfAnexoWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ObterAnexo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="parametros" type="tns:ParametrosObterAnexoWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ParametrosObterAnexoWSDTO">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="NumeroCorreio" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Versao" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Transicao" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Pasta" type="tns:PastaAutorizadaWSDTO" />
+          <s:element minOccurs="0" maxOccurs="1" name="Anexo" type="tns:AnexoWSDTO" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ObterAnexoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObterAnexoResult" type="tns:ResultadoObterAnexoWSDTO" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResultadoObterAnexoWSDTO">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResultadoCorreioWSDTO">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Anexo" type="tns:AnexoWSDTO" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ConsultarCorreiosPorPastaSoapIn">
+    <wsdl:part name="parameters" element="tns:ConsultarCorreiosPorPasta" />
+  </wsdl:message>
+  <wsdl:message name="ConsultarCorreiosPorPastaSoapOut">
+    <wsdl:part name="parameters" element="tns:ConsultarCorreiosPorPastaResponse" />
+  </wsdl:message>
+  <wsdl:message name="LerCorreioSoapIn">
+    <wsdl:part name="parameters" element="tns:LerCorreio" />
+  </wsdl:message>
+  <wsdl:message name="LerCorreioSoapOut">
+    <wsdl:part name="parameters" element="tns:LerCorreioResponse" />
+  </wsdl:message>
+  <wsdl:message name="ConsultarPastasAutorizadasSoapIn">
+    <wsdl:part name="parameters" element="tns:ConsultarPastasAutorizadas" />
+  </wsdl:message>
+  <wsdl:message name="ConsultarPastasAutorizadasSoapOut">
+    <wsdl:part name="parameters" element="tns:ConsultarPastasAutorizadasResponse" />
+  </wsdl:message>
+  <wsdl:message name="TransmitirCorreioSoapIn">
+    <wsdl:part name="parameters" element="tns:TransmitirCorreio" />
+  </wsdl:message>
+  <wsdl:message name="TransmitirCorreioSoapOut">
+    <wsdl:part name="parameters" element="tns:TransmitirCorreioResponse" />
+  </wsdl:message>
+  <wsdl:message name="ConsultarComunicacaoGeralDocumentoDivulgacaoSoapIn">
+    <wsdl:part name="parameters" element="tns:ConsultarComunicacaoGeralDocumentoDivulgacao" />
+  </wsdl:message>
+  <wsdl:message name="ConsultarComunicacaoGeralDocumentoDivulgacaoSoapOut">
+    <wsdl:part name="parameters" element="tns:ConsultarComunicacaoGeralDocumentoDivulgacaoResponse" />
+  </wsdl:message>
+  <wsdl:message name="LerComunicacaoGeralDocumentoDivulgacaoSoapIn">
+    <wsdl:part name="parameters" element="tns:LerComunicacaoGeralDocumentoDivulgacao" />
+  </wsdl:message>
+  <wsdl:message name="LerComunicacaoGeralDocumentoDivulgacaoSoapOut">
+    <wsdl:part name="parameters" element="tns:LerComunicacaoGeralDocumentoDivulgacaoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObterAnexoSoapIn">
+    <wsdl:part name="parameters" element="tns:ObterAnexo" />
+  </wsdl:message>
+  <wsdl:message name="ObterAnexoSoapOut">
+    <wsdl:part name="parameters" element="tns:ObterAnexoResponse" />
+  </wsdl:message>
+  <wsdl:portType name="CorreioWSSoap">
+    <wsdl:operation name="ConsultarCorreiosPorPasta">
+      <wsdl:input message="tns:ConsultarCorreiosPorPastaSoapIn" />
+      <wsdl:output message="tns:ConsultarCorreiosPorPastaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LerCorreio">
+      <wsdl:input message="tns:LerCorreioSoapIn" />
+      <wsdl:output message="tns:LerCorreioSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ConsultarPastasAutorizadas">
+      <wsdl:input message="tns:ConsultarPastasAutorizadasSoapIn" />
+      <wsdl:output message="tns:ConsultarPastasAutorizadasSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TransmitirCorreio">
+      <wsdl:input message="tns:TransmitirCorreioSoapIn" />
+      <wsdl:output message="tns:TransmitirCorreioSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ConsultarComunicacaoGeralDocumentoDivulgacao">
+      <wsdl:input message="tns:ConsultarComunicacaoGeralDocumentoDivulgacaoSoapIn" />
+      <wsdl:output message="tns:ConsultarComunicacaoGeralDocumentoDivulgacaoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="LerComunicacaoGeralDocumentoDivulgacao">
+      <wsdl:input message="tns:LerComunicacaoGeralDocumentoDivulgacaoSoapIn" />
+      <wsdl:output message="tns:LerComunicacaoGeralDocumentoDivulgacaoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObterAnexo">
+      <wsdl:input message="tns:ObterAnexoSoapIn" />
+      <wsdl:output message="tns:ObterAnexoSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CorreioWSSoap" type="tns:CorreioWSSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ConsultarCorreiosPorPasta">
+      <soap:operation soapAction="http://www.bcb.gov.br/correiows/ConsultarCorreiosPorPasta" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LerCorreio">
+      <soap:operation soapAction="http://www.bcb.gov.br/correiows/LerCorreio" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultarPastasAutorizadas">
+      <soap:operation soapAction="http://www.bcb.gov.br/correiows/ConsultarPastasAutorizadas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TransmitirCorreio">
+      <soap:operation soapAction="http://www.bcb.gov.br/correiows/TransmitirCorreio" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultarComunicacaoGeralDocumentoDivulgacao">
+      <soap:operation soapAction="http://www.bcb.gov.br/correiows/ConsultarComunicacaoGeralDocumentoDivulgacao" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LerComunicacaoGeralDocumentoDivulgacao">
+      <soap:operation soapAction="http://www.bcb.gov.br/correiows/LerComunicacaoGeralDocumentoDivulgacao" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObterAnexo">
+      <soap:operation soapAction="http://www.bcb.gov.br/correiows/ObterAnexo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="CorreioWSSoap12" type="tns:CorreioWSSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ConsultarCorreiosPorPasta">
+      <soap12:operation soapAction="http://www.bcb.gov.br/correiows/ConsultarCorreiosPorPasta" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LerCorreio">
+      <soap12:operation soapAction="http://www.bcb.gov.br/correiows/LerCorreio" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultarPastasAutorizadas">
+      <soap12:operation soapAction="http://www.bcb.gov.br/correiows/ConsultarPastasAutorizadas" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TransmitirCorreio">
+      <soap12:operation soapAction="http://www.bcb.gov.br/correiows/TransmitirCorreio" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ConsultarComunicacaoGeralDocumentoDivulgacao">
+      <soap12:operation soapAction="http://www.bcb.gov.br/correiows/ConsultarComunicacaoGeralDocumentoDivulgacao" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LerComunicacaoGeralDocumentoDivulgacao">
+      <soap12:operation soapAction="http://www.bcb.gov.br/correiows/LerComunicacaoGeralDocumentoDivulgacao" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObterAnexo">
+      <soap12:operation soapAction="http://www.bcb.gov.br/correiows/ObterAnexo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CorreioWS">
+    <wsdl:port name="CorreioWSSoap" binding="tns:CorreioWSSoap">
+      <soap:address location="https://www9.bcb.gov.br/bccorreiows/CorreioWS.asmx" />
+    </wsdl:port>
+    <wsdl:port name="CorreioWSSoap12" binding="tns:CorreioWSSoap12">
+      <soap12:address location="https://www9.bcb.gov.br/bccorreiows/CorreioWS.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
